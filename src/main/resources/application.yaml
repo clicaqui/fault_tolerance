@@ -1,0 +1,58 @@
+resilience4j:
+  circuitbreaker:
+    instances:
+      cepService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.RestClientException
+
+  retry:
+    instances:
+      cepService:
+        maxAttempts: 3
+        waitDuration: 500ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+
+  timelimiter:
+    instances:
+      cepService:
+        timeoutDuration: 2s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,circuitbreakers,circuitbreakerevents
+  endpoint:
+    health:
+      show-details: always
+
+
+#logging.file: /tmp/logs/app.log
+#management.address: 127.0.0.1
+#endpoints.shutdown.enabled: true
+#server.tomcat.basedir: target/tomcat
+#server.tomcat.access_log_pattern: %h %t "%r" %s %b
+#security.require_ssl: false
+#service.name: Phil
+##http.mappers.json_pretty_print: true
+#shell.ssh.enabled: true
+#shell.ssh.port: 2222
+##shell.telnet.enabled: false
+##shell.telnet.port: 1111
+#shell.auth: spring
+##shell.auth: key
+##shell.auth.key.path: ${user.home}/test/id_rsa.pub.pem
+##shell.auth: simple
+#spring.jmx.enabled: true
+#
